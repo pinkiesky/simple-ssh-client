@@ -45,7 +45,7 @@ class AcpDataFinder extends Transform {
         case FINDER_STATE.readString:
           if (p === ANSI.st) {
             const data = this.apcDataBuffer.slice(0, this.apcDataBufferPosition);
-            this.emit('data', data);
+            this.emit('acp', data);
 
             this.resetFinderState();
           } else {

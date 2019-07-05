@@ -29,6 +29,7 @@ clientDebug('connecting to %s', url.href);
 
 const decoder = new TextDecoder();
 
+
 const conn = new Client();
 conn.on('ready', () => {
   clientDebug('ready');
@@ -37,7 +38,7 @@ conn.on('ready', () => {
     shellDebug('open');
 
     const sf = new AcpDataFinder();
-    sf.on('data', (value) => {
+    sf.on('acp', (value) => {
       stream.pause();
       resources.release(stream);
 
