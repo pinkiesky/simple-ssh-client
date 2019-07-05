@@ -1,0 +1,29 @@
+#!/bin/bash
+
+API_VERSION="ssc-v1"
+COMMAND="getFile"
+
+FILE_PATH=$1
+OUT_DIR=$2
+
+if [ -z "$OUT_DIR" ]; then
+  OUT_DIR='./'
+fi
+
+if [ -d "$FILE_PATH" ]; then
+  echo "FATAL: Is a directory: $FILE_PATH"
+  exit 1
+fi
+
+if [ ! -f "$FILE_PATH" ]; then
+  echo "FATAL: Not found: $FILE_PATH"
+  exit 1
+fi
+
+FILE_ABS_PATH=`realpath "$FILE_PATH"`
+FILE_NAME=`basename "$FILE_ABS_PATH"`
+FILE_SIZE=`stat --printf="%s" "$FILE_PATH"`
+
+printf '\x1B\x9F'
+printf '%s ; %s ; %s ; %s ; %d ; %s' "$API_VERSION" "$COMMAND" "$FILE_ABS_PATH" "$FILE_NAME" "$FILE_SIZE" "$OUT_DIR"
+printf '\x9C'
