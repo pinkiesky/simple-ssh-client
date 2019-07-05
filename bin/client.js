@@ -3,6 +3,7 @@ const clientDebug = require('debug')('ssh:client');
 const shellDebug = require('debug')('ssh:shell');
 const resourcesDebug = require('debug')('system:resources');
 const parseArgs = require('../src/parseArgs');
+const AcpDataFinder = require('../src/AcpDataFinder');
 
 
 const resources = {
@@ -26,12 +27,26 @@ const { url } = parseArgs(process.argv);
 
 clientDebug('connecting to %s', url.href);
 
+const decoder = new TextDecoder();
+
 const conn = new Client();
 conn.on('ready', () => {
   clientDebug('ready');
   conn.shell({ term: process.env.TERM || 'vt100' }, (err, stream) => {
     if (err) throw err;
     shellDebug('open');
+
+    const sf = new AcpDataFinder();
+    sf.on('data', (value) => {
+      stream.pause();
+      resources.release(stream);
+
+      console.log('new string from server', decoder.decode(value));
+
+      resources.grab(stream);
+      stream.resume();
+    });
+    stream.pipe(sf);
 
     resources.grab(stream);
 
