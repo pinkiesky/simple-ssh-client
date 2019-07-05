@@ -4,6 +4,7 @@ const shellDebug = require('debug')('ssh:shell');
 const resourcesDebug = require('debug')('system:resources');
 const parseArgs = require('../src/parseArgs');
 const AcpDataFinder = require('../src/AcpDataFinder');
+const AcpCommandInterpreter = require('../src/AcpCommandInterpreter');
 
 
 const resources = {
@@ -27,12 +28,11 @@ const { url } = parseArgs(process.argv);
 
 clientDebug('connecting to %s', url.href);
 
-const decoder = new TextDecoder();
-
-
 const conn = new Client();
 conn.on('ready', () => {
   clientDebug('ready');
+  const cmdInterpreter = new AcpCommandInterpreter(conn);
+
   conn.shell({ term: process.env.TERM || 'vt100' }, (err, stream) => {
     if (err) throw err;
     shellDebug('open');
@@ -42,10 +42,15 @@ conn.on('ready', () => {
       stream.pause();
       resources.release(stream);
 
-      console.log('new string from server', decoder.decode(value));
+      cmdInterpreter.interpr(value, (error) => {
+        if (error) {
+          shellDebug('error: command "%s" failed: %s', value.command, error.message);
+          console.error(error);
+        }
 
-      resources.grab(stream);
-      stream.resume();
+        resources.grab(stream);
+        stream.resume();
+      });
     });
     stream.pipe(sf);
 
