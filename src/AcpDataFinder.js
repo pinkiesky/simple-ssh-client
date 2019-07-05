@@ -2,7 +2,7 @@ const { Transform } = require('stream');
 
 const ANSI = {
   esc: 0x1B,
-  apc: 0x9f,
+  apc: 0x9F,
   st: 0x9C,
 };
 
@@ -32,7 +32,7 @@ class AcpDataFinder extends Transform {
       switch (this.finderState) {
         case FINDER_STATE.waitEsc:
           if (p === ANSI.esc) {
-            this.finderState = FINDER_STATE.waitSos;
+            this.finderState = FINDER_STATE.waitApc;
           }
           break;
 
