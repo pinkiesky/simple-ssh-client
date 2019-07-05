@@ -1,5 +1,5 @@
-const { createWriteStream } = require('fs');
-const { join } = require('path');
+const fs = require('fs');
+const { join, basename } = require('path');
 
 
 class AcpCommandInterpreter {
@@ -9,6 +9,7 @@ class AcpCommandInterpreter {
 
     this.availableCommands = {
       getFile: this.getFile,
+      putFile: this.putFile,
     };
   }
 
@@ -35,9 +36,36 @@ class AcpCommandInterpreter {
       }
 
       sftp.createReadStream(remoteFile)
-        .pipe(createWriteStream(join(localDir, fileName)))
+        .pipe(fs.createWriteStream(join(localDir, fileName)))
         .on('error', cb)
         .on('finish', () => cb(null));
+    });
+  }
+
+  putFile(localFile, remoteDir, cb) {
+    const bname = basename(localFile);
+    fs.stat(localFile, (statErr, stats) => {
+      if (statErr) {
+        cb(statErr);
+        return;
+      }
+
+      if (!stats.isFile) {
+        cb(new Error(`Not a regular file: ${localFile}`));
+        return;
+      }
+
+      this.sshConnection.sftp((err, sftp) => {
+        if (err) {
+          cb(err);
+          return;
+        }
+
+        fs.createReadStream(localFile)
+          .pipe(sftp.createWriteStream(join(remoteDir || './', bname)))
+          .on('error', cb)
+          .on('finish', () => cb(null));
+      });
     });
   }
 }

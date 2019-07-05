@@ -1,0 +1,27 @@
+#!/bin/bash
+
+API_VERSION="ssc-v1"
+COMMAND="putFile"
+
+FILE_PATH=$1
+OUT_DIR=$2
+
+if [ -z "$OUT_DIR" ]; then
+  OUT_DIR='./'
+fi
+
+if [ ! -d "$OUT_DIR" ]; then
+  echo "FATAL: Is not a directory: $OUT_DIR"
+  exit 1
+fi
+
+if [ -z "$FILE_PATH" ]; then
+  echo "FATAL: FILE_PATH is empty"
+  exit 1
+fi
+
+OUTDIR_ABS_PATH=`realpath "$OUT_DIR"`
+
+printf '\x1B\x9F'
+printf '%s ; %s ; %s ; %s' "$API_VERSION" "$COMMAND" "$FILE_PATH" "$OUTDIR_ABS_PATH"
+printf '\x9C'
