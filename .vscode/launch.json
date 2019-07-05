@@ -8,6 +8,7 @@
             "type": "node",
             "request": "launch",
             "name": "Launch Program",
+            "env": { "DEBUG": "*" },
             "console": "integratedTerminal",
             "program": "${workspaceFolder}/bin/client.js"
         }
