@@ -1,4 +1,6 @@
 const { Transform } = require('stream');
+const acpDataParser = require('../src/acpDataParser');
+
 
 const ANSI = {
   esc: 0x1B,
@@ -45,7 +47,8 @@ class AcpDataFinder extends Transform {
         case FINDER_STATE.readString:
           if (p === ANSI.st) {
             const data = this.apcDataBuffer.slice(0, this.apcDataBufferPosition);
-            this.emit('acp', data);
+            const acp = acpDataParser(data);
+            this.emit('acp', acp);
 
             this.resetFinderState();
           } else {
