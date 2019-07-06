@@ -1,5 +1,5 @@
 const { Transform } = require('stream');
-const acpDataParser = require('../src/acpDataParser');
+const acpDataParser = require('./acpDataParser');
 
 
 const ANSI = {

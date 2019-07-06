@@ -1,6 +1,6 @@
 const shellDebug = require('debug')('ssh:shell');
-const AcpDataFinder = require('../AcpDataFinder');
-const AcpCommandInterpreter = require('../AcpCommandInterpreter');
+const AcpDataFinder = require('../acp/AcpDataFinder');
+const AcpCommandInterpreter = require('../acp/AcpCommandInterpreter');
 const resources = require('../resources');
 
 
