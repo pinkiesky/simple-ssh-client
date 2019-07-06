@@ -23,7 +23,7 @@ function tcpForwardingParse(arg) {
   const tcpFData = arg.split(':');
   if (tcpFData.length === 3) {
     tcpFData.unshift('localhost');
-  } else if (tcpFData !== 4) {
+  } else if (tcpFData.length !== 4) {
     throw new Error(`Usage error: wrong tcpForwarding value: ${arg}`);
   }
 
