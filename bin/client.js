@@ -2,7 +2,7 @@ const { Client } = require('ssh2');
 const clientDebug = require('debug')('ssh:client');
 const shellDebug = require('debug')('ssh:shell');
 const resourcesDebug = require('debug')('system:resources');
-const parseArgs = require('../src/parseArgs');
+const { parseArgsSync, usage } = require('../src/parseArgs');
 const AcpDataFinder = require('../src/AcpDataFinder');
 const AcpCommandInterpreter = require('../src/AcpCommandInterpreter');
 
@@ -24,9 +24,16 @@ const resources = {
   },
 };
 
-const { url } = parseArgs(process.argv);
+let args;
+try {
+  args = parseArgsSync(process.argv);
+} catch (err) {
+  console.error('Argument parsing error', err.message);
+  console.error('Usage: ', usage);
+  process.exit(1);
+}
 
-clientDebug('connecting to %s', url.href);
+clientDebug('connecting to %s', args.url.href);
 
 const conn = new Client();
 conn.on('ready', () => {
@@ -68,8 +75,9 @@ conn.on('ready', () => {
 }).on('end', () => {
   clientDebug('end');
 }).connect({
-  host: url.host,
-  port: url.port || 22,
-  username: url.username || process.env.USER,
-  password: url.password,
+  host: args.url.host,
+  port: args.url.port || 22,
+  username: args.url.username || process.env.USER,
+  password: args.url.password,
+  privateKey: args.privateKey,
 });
