@@ -2,6 +2,7 @@ const { Client } = require('ssh2');
 const clientDebug = require('debug')('ssh:client');
 const { parseArgsSync, usage } = require('../src/parseArgs');
 const interactiveShell = require('../src/sshSubmodules/interactiveShell');
+const forwardTCP = require('../src/sshSubmodules/forwardTCP');
 
 
 let args;
@@ -18,6 +19,21 @@ clientDebug('connecting to %s', args.url.href);
 const conn = new Client();
 conn.on('ready', () => {
   clientDebug('ready');
+
+  const {
+    enabled,
+    srcHost,
+    srcPort,
+    dstHost,
+    dstPort,
+  } = args.tcpForwarding;
+  if (enabled) {
+    forwardTCP(conn, srcHost, srcPort, dstHost, dstPort, (err) => {
+      if (err) {
+        console.error('cannot forward tcp:', err.message);
+      }
+    });
+  }
 
   interactiveShell(conn, (err) => {
     if (err) {
