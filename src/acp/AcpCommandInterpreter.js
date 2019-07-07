@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 const fs = require('fs');
 const { join, basename } = require('path');
 
@@ -35,8 +36,11 @@ class AcpCommandInterpreter {
         return;
       }
 
+      const localDest = join(localDir, fileName);
+      console.info(`Downloading: ${this.sshConnection.config.host}:"${remoteFile}" ->  "${localDest}"`);
+
       sftp.createReadStream(remoteFile)
-        .pipe(fs.createWriteStream(join(localDir, fileName)))
+        .pipe(fs.createWriteStream(localDest))
         .on('error', cb)
         .on('finish', () => cb(null));
     });
@@ -61,8 +65,11 @@ class AcpCommandInterpreter {
           return;
         }
 
+        const remoteDest = join(remoteDir || './', bname);
+        console.info(`Uploading: ${localFile} -> ${this.sshConnection.config.host}:"${remoteDest}"`);
+
         fs.createReadStream(localFile)
-          .pipe(sftp.createWriteStream(join(remoteDir || './', bname)))
+          .pipe(sftp.createWriteStream(remoteDest))
           .on('error', cb)
           .on('finish', () => cb(null));
       });
