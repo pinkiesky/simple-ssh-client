@@ -1,3 +1,5 @@
+#!/usr/bin/node
+
 const { Client } = require('ssh2');
 const debug = require('debug');
 const clientDebug = require('debug')('ssh:client');

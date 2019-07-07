@@ -1,12 +1,12 @@
 {
   "name": "ssh-simple-client",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "ssshc - SSH client (remote login program) writted in Node.js with SSH2 library",
+  "main": "ssshc",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "sport_09@mail.ru",
   "license": "ISC",
   "dependencies": {
     "debug": "^4.1.1",
