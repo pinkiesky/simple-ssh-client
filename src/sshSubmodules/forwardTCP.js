@@ -25,7 +25,10 @@ module.exports = function forwardTCP(sshConn, srcHost, srcPort, dstHost, dstPort
         stream.write(data);
       });
 
-      stream.on('end', () => fwdRemoteDebug('close'));
+      stream.on('close', () => {
+        fwdRemoteDebug('close');
+        sock.end();
+      });
 
       sock.on('close', () => {
         fwdLocalDebug('close');
