@@ -11,5 +11,5 @@ function join_by {
 sendAcpData() {
   echo -ne '\x1B\x9F' # ESC ACP
   echo -ne `join_by "$ACP_DELIMITER" "$ACP_API_VERSION" $*`
-  echo -ne '\x9C' # ST
+  echo -ne '\x9C\r\x1B[K' # ST \r ESC EL
 }
