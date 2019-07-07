@@ -1,10 +1,16 @@
 const { Client } = require('ssh2');
+const debug = require('debug');
 const clientDebug = require('debug')('ssh:client');
 const { parseArgsSync, usage } = require('../src/parseArgs');
 const interactiveShell = require('../src/sshSubmodules/interactiveShell');
 const forwardTCP = require('../src/sshSubmodules/forwardTCP');
 const forwardTCPIn = require('../src/sshSubmodules/forwardTCPIn');
 
+debug.formatArgs = function formatArgs(args) { // requires access to "this"
+  const time = new Date().toLocaleTimeString();
+  // eslint-disable-next-line no-param-reassign
+  args[0] = ` [${time}] ${this.namespace} ${args[0]};`;
+};
 
 let args;
 try {
