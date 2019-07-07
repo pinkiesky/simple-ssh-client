@@ -1,7 +1,6 @@
 #!/bin/bash
+source acp.sh
 
-API_VERSION="ssc-v1"
-COMMAND="putFile"
 
 FILE_PATH=$1
 OUT_DIR=$2
@@ -22,6 +21,4 @@ fi
 
 OUTDIR_ABS_PATH=`realpath "$OUT_DIR"`
 
-printf '\x1B\x9F'
-printf '%s ; %s ; %s ; %s' "$API_VERSION" "$COMMAND" "$FILE_PATH" "$OUTDIR_ABS_PATH"
-printf '\x9C'
+sendAcpData "putFile" "$FILE_PATH" "$OUTDIR_ABS_PATH"
