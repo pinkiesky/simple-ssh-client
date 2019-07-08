@@ -10,10 +10,11 @@ module.exports = {
     process.stdin.pipe(shellStream);
   },
   release(shellStream) {
-    resourcesDebug('release');
-
     shellStream.unpipe(process.stdout);
     process.stdin.unpipe(shellStream);
+    process.stdin.unref();
     process.stdin.setRawMode(false);
+
+    resourcesDebug('release');
   },
 };
