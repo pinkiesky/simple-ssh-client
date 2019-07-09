@@ -16,13 +16,21 @@ module.exports = function forwardTCP(sshConn, srcHost, srcPort, dstHost, dstPort
         return;
       }
 
-      fwdRemoteDebug('connected to remote');
+      fwdRemoteDebug('connected');
 
       stream.on('data', (data) => {
-        sock.write(data);
+        try {
+          sock.write(data);
+        } catch (ignore) {
+          // must catch Socket.writeAfterFIN error
+        }
       });
       sock.on('data', (data) => {
-        stream.write(data);
+        try {
+          stream.write(data);
+        } catch (ignore) {
+          // must catch Socket.writeAfterFIN error
+        }
       });
 
       stream.on('close', () => {
