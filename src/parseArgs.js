@@ -36,7 +36,9 @@ function tcpForwardingParse(arg) {
 }
 
 function parseArgsSync(argv) {
-  const args = minimist(argv.splice(2));
+  const args = minimist(argv.splice(2), {
+    boolean: ['v'],
+  });
 
   let rawUrl = args._[0];
   if (!rawUrl || !rawUrl.length) {
@@ -61,6 +63,7 @@ function parseArgsSync(argv) {
     tcpForwarding,
     tcpForwardingIn,
     privateKey,
+    debug: !!args.v,
   };
 }
 

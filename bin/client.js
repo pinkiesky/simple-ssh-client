@@ -23,6 +23,10 @@ try {
   process.exit(1);
 }
 
+if (args.debug) {
+  debug.enable('*');
+}
+
 clientDebug('connecting to %s', args.url.href);
 
 const conn = new Client();
