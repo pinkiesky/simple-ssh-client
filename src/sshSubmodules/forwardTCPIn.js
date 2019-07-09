@@ -5,6 +5,7 @@ const fwdRemoteDebug = require('debug')('ssh:forwardingIn:remote');
 
 module.exports = function forwardTCPIn(sshConn, srcHost, srcPort, dstHost, dstPort, cb) {
   sshConn.forwardIn(srcHost, srcPort, (err) => {
+    fwdRemoteDebug('start forwarding on %s:%s', srcHost, srcPort);
     cb(err);
   });
 
