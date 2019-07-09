@@ -7,6 +7,7 @@ const { parseArgsSync, usage } = require('../src/parseArgs');
 const interactiveShell = require('../src/sshSubmodules/interactiveShell');
 const forwardTCP = require('../src/sshSubmodules/forwardTCP');
 const forwardTCPIn = require('../src/sshSubmodules/forwardTCPIn');
+require('../src/handleInternalTCPError');
 
 debug.formatArgs = function formatArgs(args) { // requires access to "this"
   const time = new Date().toLocaleTimeString();
