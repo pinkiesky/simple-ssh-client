@@ -25,7 +25,7 @@ function commandHandler(stream, ansiDataTextFinder, cmdInterpreter) {
   };
 }
 
-module.exports = function forwardTCP(sshConn, cb) {
+module.exports = function interactiveShell(sshConn, cb) {
   sshConn.shell({ term: process.env.TERM || 'vt100' }, (err, stream) => {
     if (err) {
       cb(err);
