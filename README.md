@@ -27,6 +27,7 @@ destination|`[user[:password]@]hostname[:port]`|Connection endpoint
 -R|`[bind_address:]port:host:hostport`|Specifies that connections to the given TCP port on the remote (server) host are to be forwarded to the local side.
 -i|`/path/to/id_file`|Selects a file from which the identity (private key) for public key authentication is read.
 -v||Verbose mode. Causes ssshc to print debugging messages about its progress.  
+-j||Injects host utils. Uploads all host util scripts and change $PATH automatically.
 
 ## Host utils
 

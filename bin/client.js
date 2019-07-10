@@ -7,6 +7,7 @@ const { parseArgsSync, usage } = require('../src/parseArgs');
 const interactiveShell = require('../src/sshSubmodules/interactiveShell');
 const forwardTCP = require('../src/sshSubmodules/forwardTCP');
 const forwardTCPIn = require('../src/sshSubmodules/forwardTCPIn');
+const injectHostUtils = require('../src/sshSubmodules/injectHostUtils');
 require('../src/handleInternalTCPError');
 
 debug.formatArgs = function formatArgs(args) { // requires access to "this"
@@ -62,9 +63,17 @@ conn.on('ready', () => {
     });
   }
 
-  interactiveShell(conn, (err) => {
+  interactiveShell(conn, (err, stream) => {
     if (err) {
       console.error('cannot open interactive shell with remote host:', err.message);
+    }
+
+    if (args.injectHostUtils) {
+      injectHostUtils(conn, stream, (injErr) => {
+        if (err) {
+          console.error(`Cannot inject: ${injErr.message}`);
+        }
+      });
     }
   });
 }).on('error', (err) => {
