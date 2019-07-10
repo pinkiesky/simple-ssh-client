@@ -23,4 +23,4 @@ FILE_ABS_PATH=`realpath "$FILE_PATH"`
 FILE_NAME=`basename "$FILE_ABS_PATH"`
 FILE_SIZE=`stat --printf="%s" "$FILE_PATH"`
 
-sendAcpData "getFile" "$FILE_ABS_PATH" "$FILE_NAME" "$FILE_SIZE" "$OUT_DIR"
+sendAcpData "getFile" "$FILE_ABS_PATH" "$OUT_DIR" "$FILE_NAME" "$FILE_SIZE"

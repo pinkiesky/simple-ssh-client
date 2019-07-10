@@ -14,6 +14,8 @@ class CommandInterpreter {
     this.availableCommands = {
       getFile: this.getFile,
       putFile: this.putFile,
+      get: this.getFile,
+      put: this.putFile,
     };
   }
 
@@ -23,7 +25,7 @@ class CommandInterpreter {
     throw new Error('not implemented');
   }
 
-  getFile(remoteFile, fileName, fileSize, localDir, cb) {
+  getFile(remoteFile, localDir, fileName, fileSize, cb) {
     this.sshConnection.sftp((err, sftp) => {
       if (err) {
         cb(err);
