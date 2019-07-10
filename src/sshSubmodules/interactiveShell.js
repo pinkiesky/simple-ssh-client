@@ -1,8 +1,29 @@
 const shellDebug = require('debug')('ssh:shell');
 const AcpDataFinder = require('../acp/AcpDataFinder');
 const AcpCommandInterpreter = require('../acp/AcpCommandInterpreter');
+const PlainTextCommandInterpreter = require('../PlainTextCommandInterpreter');
 const resources = require('../resources');
+const AnsiTextPrefixFinder = require('../AnsiTextPrefixFinder');
+const ANSI = require('../ANSI');
 
+
+function commandHandler(stream, ansiDataTextFinder, cmdInterpreter) {
+  return (value) => {
+    stream.pause();
+    resources.release(stream, ansiDataTextFinder);
+
+    cmdInterpreter.interpr(value, (error) => {
+      if (error) {
+        shellDebug('error: command "%s" failed: %s', value.command, error.message);
+        console.error(error);
+      }
+
+      resources.grab(stream, ansiDataTextFinder);
+      stream.resume();
+      stream.write(String.fromCharCode(ANSI.ctrl_c));
+    });
+  };
+}
 
 module.exports = function forwardTCP(sshConn, cb) {
   sshConn.shell({ term: process.env.TERM || 'vt100' }, (err, stream) => {
@@ -15,30 +36,22 @@ module.exports = function forwardTCP(sshConn, cb) {
 
     shellDebug('open');
 
+    const plainCmdInterpreter = new PlainTextCommandInterpreter(sshConn);
+    const ansiDataTextFinder = new AnsiTextPrefixFinder({ prefixes: ['get ', 'put '] });
+    ansiDataTextFinder
+      .on('find', commandHandler(stream, ansiDataTextFinder, plainCmdInterpreter))
+      .pipe(stream);
+
     const cmdInterpreter = new AcpCommandInterpreter(sshConn);
-
     const sf = new AcpDataFinder();
-    sf.on('acp', (value) => {
-      stream.pause();
-      resources.release(stream);
+    sf.on('acp', commandHandler(stream, ansiDataTextFinder, cmdInterpreter));
 
-      cmdInterpreter.interpr(value, (error) => {
-        if (error) {
-          shellDebug('error: command "%s" failed: %s', value.command, error.message);
-          console.error(error);
-        }
-
-        resources.grab(stream);
-        stream.resume();
-      });
-    });
     stream.pipe(sf);
-
-    resources.grab(stream);
+    resources.grab(stream, ansiDataTextFinder);
 
     stream.on('close', () => {
       shellDebug('close');
-      resources.release(stream);
+      resources.release(stream, ansiDataTextFinder);
       sshConn.end();
     });
   });
