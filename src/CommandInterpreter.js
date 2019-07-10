@@ -35,10 +35,7 @@ class CommandInterpreter {
       const localDest = join(localDir || './', fileName || basename(remoteFile));
       console.info(`Downloading: ${this.sshConnection.config.host}:"${remoteFile}" ->  "${localDest}"`);
 
-      sftp.createReadStream(remoteFile)
-        .pipe(fs.createWriteStream(localDest))
-        .on('error', cb)
-        .on('finish', () => cb(null));
+      sftp.fastGet(remoteFile, localDest, cb);
     });
   }
 
@@ -63,11 +60,7 @@ class CommandInterpreter {
 
         const remoteDest = join(remoteDir || './', bname);
         console.info(`Uploading: ${localFile} -> ${this.sshConnection.config.host}:"${remoteDest}"`);
-
-        fs.createReadStream(localFile)
-          .pipe(sftp.createWriteStream(remoteDest))
-          .on('error', cb)
-          .on('finish', () => cb(null));
+        sftp.fastPut(localFile, remoteDest, cb);
       });
     });
   }
