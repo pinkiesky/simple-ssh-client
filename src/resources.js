@@ -2,16 +2,16 @@ const resourcesDebug = require('debug')('system:resources');
 
 
 module.exports = {
-  grab(shellStream) {
+  grab(shellStream, toStdin) {
     resourcesDebug('grab');
 
     process.stdin.setRawMode(true);
     shellStream.pipe(process.stdout);
-    process.stdin.pipe(shellStream);
+    process.stdin.pipe(toStdin);
   },
-  release(shellStream) {
+  release(shellStream, toStdin) {
     shellStream.unpipe(process.stdout);
-    process.stdin.unpipe(shellStream);
+    process.stdin.unpipe(toStdin);
     process.stdin.unref();
     process.stdin.setRawMode(false);
 
