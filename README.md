@@ -28,7 +28,7 @@ destination|`[user[:password]@]hostname[:port]`|Connection endpoint
 
 On the server, you must add the directory with scripts in PATH: `PATH=$PATH:/sss-simple-client/hostUtils/`
 
-* `get $FROM $TO` - downloading file from ssh-server to client
-* `put $FROM $TO` - uploading file from client to server
+* `getFile $FROM $TO` - downloading file from ssh-server to client
+* `putFile $FROM $TO` - uploading file from client to server
 
 `$TO` can be omitted and by default it is `./`
