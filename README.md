@@ -12,6 +12,12 @@ ssshc - SSH client (remote login program) writted in Node.js with SSH2 library
 
 Ex: `./ssshc -i ~/.ssh/id_rsa root@10.1.1.254`
 
+OR
+
+`node ./bin/client.js arguments`
+
+Ex: `node ./bin/client.js root@10.1.1.254`
+
 
 ## CLI arguments
 Name | Format | Description
