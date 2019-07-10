@@ -1,12 +1,7 @@
 const { Transform } = require('stream');
 const acpDataParser = require('./acpDataParser');
+const ANSI = require('../ANSI');
 
-
-const ANSI = {
-  esc: 0x1B,
-  apc: 0x9F,
-  st: 0x9C,
-};
 
 const FINDER_STATE = {
   waitEsc: 0,
